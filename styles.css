@@ -1,0 +1,21 @@
+.body-container {
+    border: .5px solid black;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+}
+legend {
+    text-align: center;
+}
+input {
+    border-radius: 10px;
+    transition-duration: .4s;
+    padding: .2rem;
+    width: clamp(15px, 15vw, 300px);
+
+}
+input:hover {
+    background-color: rgba(202, 200, 200, 0.5);
+}
+
