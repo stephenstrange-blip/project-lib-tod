@@ -1,13 +1,19 @@
-.body-container {
-    border: .5px solid black;
+.body-container,
+form {
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
 }
+
+form {
+    padding: 1rem;
+}
+
 legend {
     text-align: center;
 }
+
 input {
     border-radius: 10px;
     transition-duration: .4s;
@@ -15,7 +21,38 @@ input {
     width: clamp(15px, 15vw, 300px);
 
 }
+
 input:hover {
     background-color: rgba(202, 200, 200, 0.5);
 }
+button {
+    background-color: rgb(106, 231, 231);
+    padding: .5rem;
+    margin-top: 1rem;
+    border-radius: 10px;
+}
 
+button:hover {
+    opacity: .8;
+}
+table {
+    border-spacing: 0;
+}
+table *, button {
+    transition-duration: .4s;
+}
+
+th,
+td {
+    /* word-wrap:break-word;  if table or each column has a fixed width*/
+    padding: 1rem;
+    border-top: 1px solid rgb(106, 231, 231);
+    border-left: 1px solid rgb(106, 231, 231);
+}
+
+th:hover,
+td:hover {
+    background-color: rgba(212, 252, 252, 0.6);
+    box-shadow: rgb(106, 231, 231) -.2rem -.2rem
+     .2rem inset;
+}
