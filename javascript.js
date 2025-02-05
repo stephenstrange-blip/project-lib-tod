@@ -4,7 +4,7 @@ function Book(title, author, genre, numPages, isRead = false, price) {
     this.Title = title;
     this.Author = author;
     this.Pages = numPages;
-    this.Status = isRead ? "Yes" : "No"
+    this.Status = isRead ? "Read" : "Not Yet Read"
     this.Genre = genre;
     this.Price = price;
 }
@@ -62,19 +62,25 @@ Table.prototype.setTable = function () {
 
 Table.prototype.setHeaders = function () {
     const thead = document.createElement("thead");
-
+    const mainHeader = this.mainHeader;
     //keys of a Book Object serve as subheaders, i.e. Title
     const subHeaders = Object.keys(this.list[0])
 
     console.log(subHeaders);
 
     function setMainHeader() {
+       
         // Create a single header that spans across all subheaders, i.e. Books
         const mainHeaderRow = document.createElement("th");
         const tr = document.createElement("tr");
+        console.log(subHeaders.length)
 
-        mainHeaderRow.setAttribute("id", this.mainHeader)
-        mainHeaderRow.textContent = "Books";
+        Object.assign(mainHeaderRow, {
+            id: mainHeader,
+            // camelCase for multi-word attributes even if they're not camelCased in actual DOM
+            colSpan: subHeaders.length,
+            textContent: mainHeader 
+        })
 
         tr.appendChild(mainHeaderRow);
         return tr
@@ -85,14 +91,17 @@ Table.prototype.setHeaders = function () {
         const tr = document.createElement("tr");
 
         subHeaders.forEach((header) => {
-            const subheaderRow = document.createElement("th");
+            const subHeaderTr = document.createElement("th");
 
-            // id= of main header and headers= of subheaders should be the same
-            subheaderRow.setAttribute("id", header);
-            subheaderRow.setAttribute("headers", this.mainHeader);
-            subheaderRow.textContent = header;
+            // Setting attributes using Object.assign() Method vs .setAttribute()
+            Object.assign(subHeaderTr, {
+                // id= of main header and headers= of subheaders should be the same
+                id: header,
+                headers: mainHeader,
+                textContent: header
+            })
 
-            tr.appendChild(subheaderRow);
+            tr.appendChild(subHeaderTr);
         })
         return tr;
     }
