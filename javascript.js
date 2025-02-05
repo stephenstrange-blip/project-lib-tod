@@ -34,46 +34,49 @@ SearchList.prototype.setSearchList = function () {
 
     const form = document.querySelector("form")
     form.appendChild(dataList)
-
 }
 
 function Table(list) {
     this.list = list;
-    this.table = undefined;
+    this.mainHeader = "Books";
+    this.table = undefined; // property that will be added to the DOM html
 }
 
 Table.prototype.setTable = function () {
     const table = document.createElement("table");
     const caption = document.createElement("caption");
     caption.textContent = "Books I need to read for 2025"
-    
+
 
     const thead = this.setHeaders();
+    const tbody = this.setBody();
     // const tbody = this.setBody();
 
-    table.appendChild(caption);
-    table.appendChild(thead);
+    // table.appendChild(caption);
+    // table.appendChild(thead);
+    // table.appendChild(tbody);
+    table.append(caption, thead, tbody);
     this.table = table;
-    
+
 }
 
 Table.prototype.setHeaders = function () {
     const thead = document.createElement("thead");
-    
+
     //keys of a Book Object serve as subheaders, i.e. Title
     const subHeaders = Object.keys(this.list[0])
-    const mainHeader = "Books";
+
     console.log(subHeaders);
-    
+
     function setMainHeader() {
         // Create a single header that spans across all subheaders, i.e. Books
-        const mainHeader = document.createElement("th");
+        const mainHeaderRow = document.createElement("th");
         const tr = document.createElement("tr");
 
-        mainHeader.setAttribute("id", mainHeader)
-        mainHeader.textContent = "Books";
+        mainHeaderRow.setAttribute("id", this.mainHeader)
+        mainHeaderRow.textContent = "Books";
 
-        tr.appendChild(mainHeader);
+        tr.appendChild(mainHeaderRow);
         return tr
     }
 
@@ -82,28 +85,48 @@ Table.prototype.setHeaders = function () {
         const tr = document.createElement("tr");
 
         subHeaders.forEach((header) => {
-            const subheader = document.createElement("th");
+            const subheaderRow = document.createElement("th");
 
             // id= of main header and headers= of subheaders should be the same
-            subheader.setAttribute("id", header);
-            subheader.setAttribute("headers", mainHeader);
-            subheader.textContent = header;
+            subheaderRow.setAttribute("id", header);
+            subheaderRow.setAttribute("headers", this.mainHeader);
+            subheaderRow.textContent = header;
 
-            tr.appendChild(subheader);
+            tr.appendChild(subheaderRow);
         })
         return tr;
     }
+
     const mainHeaderRow = setMainHeader();
     const subHeaderRow = setSubHeader();
-    thead.appendChild(mainHeaderRow);
-    thead.appendChild(subHeaderRow);
+    // thead.appendChild(mainHeaderRow);
+    // thead.appendChild(subHeaderRow);
+    thead.append(mainHeaderRow, subHeaderRow)
 
     return thead;
 
 }
 
-Table.prototype.setBody = function (){
+Table.prototype.setBody = function () {
     const tbody = document.createElement("tbody");
+
+    this.list.forEach((book) => {
+        const tr = document.createElement("tr");
+
+        // Make an array of arrays with Object.entries()
+        const entries = Object.entries(book);
+        entries.forEach((keyValue) => {
+            const td = document.createElement("td");
+
+            // inner array format is [key, value]
+            td.setAttribute("headers", `${this.mainHeader} ${keyValue[0]}`)
+            td.textContent = keyValue[1];
+            tr.appendChild(td);
+        })
+        tbody.appendChild(tr);
+    })
+
+    return tbody;
 }
 
 function addBookToLibrary(title, author, genre, numPages, isRead, price) {
@@ -111,11 +134,13 @@ function addBookToLibrary(title, author, genre, numPages, isRead, price) {
     const book = new Book(title, author, genre, numPages, isRead, price)
     myLibrary.push(book);
 }
+
 function setData(library) {
     const container = document.querySelector(".body-container");
     // SearchList creates an empty List that will have custom functions
     const search = new SearchList([]);
     const table = new Table([]);
+
     library.forEach(book => {
         search.list.push(book.Title.trim())
         table.list.push(book)
