@@ -1,4 +1,6 @@
 const myLibrary = [];
+const form = document.querySelector("form")
+const input = document.getElementById("book-search");
 
 function Book(title, author, genre, numPages, isRead = false, price) {
     this.Title = title;
@@ -20,7 +22,6 @@ function SearchList(list) {
 
 SearchList.prototype.setSearchList = function () {
     // Create a dataList, link it to the input and add to form
-    const input = document.getElementById("book-search");
     const dataList = document.createElement("datalist");
 
     dataList.setAttribute("id", "search-list");
@@ -31,8 +32,6 @@ SearchList.prototype.setSearchList = function () {
         option.setAttribute("value", item);
         dataList.appendChild(option);
     })
-
-    const form = document.querySelector("form")
     form.appendChild(dataList)
 }
 
@@ -66,20 +65,18 @@ Table.prototype.setHeaders = function () {
     //keys of a Book Object serve as subheaders, i.e. Title
     const subHeaders = Object.keys(this.list[0])
 
-    console.log(subHeaders);
-
     function setMainHeader() {
-       
+
         // Create a single header that spans across all subheaders, i.e. Books
         const mainHeaderRow = document.createElement("th");
         const tr = document.createElement("tr");
-        console.log(subHeaders.length)
+        // console.log(subHeaders.length)
 
         Object.assign(mainHeaderRow, {
             id: mainHeader,
             // camelCase for multi-word attributes even if they're not camelCased in actual DOM
             colSpan: subHeaders.length,
-            textContent: mainHeader 
+            textContent: mainHeader
         })
 
         tr.appendChild(mainHeaderRow);
@@ -161,6 +158,51 @@ function setData(library) {
     container.appendChild(table.table);
 }
 
+function handleSubmit() {
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        // console.log(input.value);
+
+        outer: for (const book of myLibrary) {
+            if (input.value === book.Title.trim()) {
+                let index = myLibrary.indexOf(book) + 1;
+                // console.log(index)
+                let row = document.querySelector(`tbody > tr:nth-child(${index})`);
+                // row.style['backgroundColor'] = "teal";
+                Object.assign(row.style, {
+                    backgroundColor: "teal",
+                    color: "white"
+                });
+                break outer;
+            }
+        }
+
+        // TODO: Handle Changes when another word search is submitted before the transition of current
+        // search ends
+
+    })
+}
+
+function handleTransition() {
+    const tr = document.querySelectorAll("tbody > tr")
+    tr.forEach((target) => {
+        target.addEventListener("transitionend", () => {
+            let currentBgColor = target.style['backgroundColor']
+            console.log(currentBgColor, target.innerText)
+            // transition of bg back to white (from teal) is delayed for 8s
+            if (currentBgColor === "white") {
+                target.style['transitionDelay'] = "0s"
+            } else {
+                target.style["transitionDelay"]  = "6s"
+                Object.assign(target.style, {    
+                    backgroundColor: "white",
+                    color: "black"
+                })
+            }
+        })
+    })
+}
+
 
 
 addBookToLibrary("Terraform: Up and Running: Writing Infrastructure as Code", "Yevgenly Brikman", "Educational", 457, false, 42.87);
@@ -169,3 +211,5 @@ addBookToLibrary("The DevOps Handbook", "Kim, G.|Debois, P.|Willis, J.|Humble J.
 addBookToLibrary("Building Microservices: Designing Fine-Grained Systems ", "Sam Newman", "Educational", 612, false, 44.49);
 
 setData(myLibrary);
+handleSubmit();
+handleTransition();
