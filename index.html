@@ -20,6 +20,42 @@
             </p>
             <button type="submit">Submit</button>
         </form>
+
+        <button id="openDialog">Add another book?</button>
+        <dialog id="addBooks">
+            <form novalidate>
+                <legend>Add New Book</legend>
+                <p>
+                    <label for="book-title"></label>
+                    <input autofocus type="text" name="Title" id="book-title" required placeholder="Harry Potter">
+                </p>
+                <p>
+                    <label for="book-author"></label>
+                    <input type="text" name="Author" id="book-author" required placeholder="J.K. Rowling">
+                </p>
+                <p>
+                    <label for="book-pages"></label>
+                    <input type="number" min="10" name="Pages" id="book-pages" required placeholder="458">
+                </p>
+                <p>
+                    <label for="book-status"></label>
+                    <select name="Status" id="book-status">
+                        <option value="true">Have Read Already</option>
+                        <option value="false">Haven't Read Yet</option>
+                    </select>
+                </p>
+                <p>
+                    <label for="book-genre"></label>
+                    <input type="text" name="Genre" id="book-genre" required placeholder="Educational">
+                </p>
+                <p>
+                    <label for="book-price">Set Price</label>
+                    <input type="number" name="Price" id="book-price" step=".1" min="1" required placeholder="4.99">
+                </p>
+                <button  id="cancel" formmethod="dialog">Cancel</button>
+                <buton type="submit" id="submit">Submit</buton>
+            </form>
+        </dialog>
     </div>
 </body>
 

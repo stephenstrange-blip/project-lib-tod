@@ -5,10 +5,10 @@ const input = document.getElementById("book-search");
 function Book(title, author, genre, numPages, isRead = false, price) {
     this.Title = title;
     this.Author = author;
-    this.Pages = numPages;
+    this.Pages = parseInt(numPages);
     this.Status = isRead ? "Read" : "Not Yet Read"
     this.Genre = genre;
-    this.Price = price;
+    this.Price = parseFloat(price);
 }
 
 Book.prototype.info = function () {
@@ -28,6 +28,7 @@ SearchList.prototype.setSearchList = function () {
     input.setAttribute("list", "search-list");
 
     this.list.forEach((item) => {
+
         const option = document.createElement("option");
         option.setAttribute("value", item);
         dataList.appendChild(option);
@@ -46,17 +47,11 @@ Table.prototype.setTable = function () {
     const caption = document.createElement("caption");
     caption.textContent = "Books I need to read for 2025"
 
-
     const thead = this.setHeaders();
     const tbody = this.setBody();
-    // const tbody = this.setBody();
 
-    // table.appendChild(caption);
-    // table.appendChild(thead);
-    // table.appendChild(tbody);
     table.append(caption, thead, tbody);
     this.table = table;
-
 }
 
 Table.prototype.setHeaders = function () {
@@ -70,7 +65,6 @@ Table.prototype.setHeaders = function () {
         // Create a single header that spans across all subheaders, i.e. Books
         const mainHeaderRow = document.createElement("th");
         const tr = document.createElement("tr");
-        // console.log(subHeaders.length)
 
         Object.assign(mainHeaderRow, {
             id: mainHeader,
@@ -82,7 +76,6 @@ Table.prototype.setHeaders = function () {
         tr.appendChild(mainHeaderRow);
         return tr
     }
-
 
     function setSubHeader() {
         const tr = document.createElement("tr");
@@ -97,7 +90,6 @@ Table.prototype.setHeaders = function () {
                 headers: mainHeader,
                 textContent: header
             })
-
             tr.appendChild(subHeaderTr);
         })
         return tr;
@@ -108,7 +100,6 @@ Table.prototype.setHeaders = function () {
     // thead.appendChild(mainHeaderRow);
     // thead.appendChild(subHeaderRow);
     thead.append(mainHeaderRow, subHeaderRow)
-
     return thead;
 
 }
@@ -141,8 +132,9 @@ function addBookToLibrary(title, author, genre, numPages, isRead, price) {
     myLibrary.push(book);
 }
 
-function setData(library) {
+function setInitialData(library) {
     const container = document.querySelector(".body-container");
+
     // SearchList creates an empty List that will have custom functions
     const search = new SearchList([]);
     const table = new Table([]);
@@ -161,14 +153,12 @@ function setData(library) {
 function handleSubmit() {
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-        // console.log(input.value);
 
         outer: for (const book of myLibrary) {
             if (input.value === book.Title.trim()) {
+
                 let index = myLibrary.indexOf(book) + 1;
-                // console.log(index)
                 let row = document.querySelector(`tbody > tr:nth-child(${index})`);
-                // row.style['backgroundColor'] = "teal";
                 Object.assign(row.style, {
                     backgroundColor: "teal",
                     color: "white"
@@ -176,10 +166,7 @@ function handleSubmit() {
                 break outer;
             }
         }
-
-        // TODO: Handle Changes when another word search is submitted before the transition of current
-        // search ends
-
+        // TODO: Handle Changes when another word search is submitted before the transition of current search ends
     })
 }
 
@@ -188,13 +175,13 @@ function handleTransition() {
     tr.forEach((target) => {
         target.addEventListener("transitionend", () => {
             let currentBgColor = target.style['backgroundColor']
-            console.log(currentBgColor, target.innerText)
+
             // transition of bg back to white (from teal) is delayed for 8s
             if (currentBgColor === "white") {
                 target.style['transitionDelay'] = "0s"
             } else {
-                target.style["transitionDelay"]  = "6s"
-                Object.assign(target.style, {    
+                target.style["transitionDelay"] = "6s"
+                Object.assign(target.style, {
                     backgroundColor: "white",
                     color: "black"
                 })
@@ -203,13 +190,77 @@ function handleTransition() {
     })
 }
 
+function handleDialog() {
+    const dialog = document.getElementById("addBooks");
+    const openBtn = document.getElementById("openDialog");
+    const submitBtn = document.getElementById("submit");
+    const inputs = dialog.querySelectorAll("dialog > form > p > *[id^=book]")
+    const returnValue = {}
 
+    openBtn.addEventListener("click", () => {
+        dialog.showModal();
+    })
+
+    submitBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        inputs.forEach((input) => {
+
+            if (input.name === "Status") {
+                // addBookToLibrary() accepts boolean values for this.Status
+                returnValue[input.name] = input.value === 'true';
+            } else returnValue[input.name] = input.value;
+        })
+        dialog.close();
+    })
+
+    dialog.addEventListener("close", (event) => {
+        console.log(returnValue, Object.values(returnValue));
+        //Add back to main Array for storage, history, and format validation
+        addBookToLibrary(
+            returnValue.Title,
+            returnValue.Author,
+            returnValue.Genre,
+            returnValue.Pages,
+            returnValue.Status,
+            returnValue.Price);
+        //Add the latest data to DOM
+        setNewData(myLibrary[myLibrary.length - 1]);
+    })
+}
+
+function setNewData(newbook) {
+
+    function addToTable() {
+        const tbody = document.querySelector("tbody")
+        const tr = document.createElement("tr");
+        const entries = Object.entries(newbook);
+
+        entries.forEach((keyValue) => {
+            const td = document.createElement("td");
+            td.setAttribute("headers", `${this.mainHeader} ${keyValue[0]}`)
+            td.textContent = keyValue[1];
+            tr.appendChild(td);
+        })
+        tbody.appendChild(tr);
+    }
+    function addToSearchList () {
+        const dataList = document.querySelector("datalist");
+        const option = document.createElement("option");
+        option.setAttribute("value", newbook.Title)
+        dataList.appendChild(option);
+    }   
+
+    addToTable();
+    addToSearchList();
+
+}
 
 addBookToLibrary("Terraform: Up and Running: Writing Infrastructure as Code", "Yevgenly Brikman", "Educational", 457, false, 42.87);
 addBookToLibrary("AWS Certified Solutions Architect Study Guide with 900 Practice Test Questions: Associate (SAA-C03) Exam (Sybex Study Guide)", "Piper B.|Clinton D.", "Study Guide", 480, false, 39.31);
 addBookToLibrary("The DevOps Handbook", "Kim, G.|Debois, P.|Willis, J.|Humble J. ", "Educational", 480, false, 22);
-addBookToLibrary("Building Microservices: Designing Fine-Grained Systems ", "Sam Newman", "Educational", 612, false, 44.49);
+addBookToLibrary("Building Microservices: Designing Fine-Grained Systems", "Sam Newman", "Educational", 612, false, 44.49);
 
-setData(myLibrary);
+setInitialData(myLibrary);
 handleSubmit();
 handleTransition();
+handleDialog();

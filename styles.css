@@ -25,6 +25,7 @@ input {
 input:hover {
     background-color: rgba(202, 200, 200, 0.5);
 }
+
 button {
     background-color: rgb(106, 231, 231);
     padding: .5rem;
@@ -35,10 +36,13 @@ button {
 button:hover {
     opacity: .8;
 }
+
 table {
     border-spacing: 0;
 }
-table *, button {
+
+table *,
+button {
     transition-duration: .5s;
 }
 
@@ -48,9 +52,20 @@ td {
     padding: 1rem;
     border-top: 1px solid rgb(106, 231, 231);
     border-left: 1px solid rgb(106, 231, 231);
-    /* background-color: rgba(0, 128, 128, 0.726); */
 }
 
 
+dialog::backdrop {
+    background-color: rgba(156, 243, 243, 0.363);
+    border: .5px solid rgba(127, 255, 212, 0.568);
+}
 
+dialog>form>input {
+    padding: .5rem;
+    padding-left: 1rem;
+}
 
+dialog>form>input:focus {
+    border: 1px solid red;
+    box-shadow: red .1rem .1rem .1rem inset;
+}
