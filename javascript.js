@@ -2,129 +2,135 @@ const myLibrary = [];
 const form = document.querySelector("form")
 const input = document.getElementById("book-search");
 
-function Book(title, author, genre, numPages, isRead = false, price) {
-    this.Title = title;
-    this.Author = author;
-    this.Pages = parseInt(numPages);
-    this.Status = isRead ? "Read" : "Not Yet Read"
-    this.Genre = genre;
-    this.Price = parseFloat(price);
+class Book {
+    constructor(title, author, genre, numPages, isRead = false, price) {
+        this.Title = title;
+        this.Author = author;
+        this.Pages = parseInt(numPages);
+        this.Status = isRead ? "Read" : "Not Yet Read";
+        this.Genre = genre;
+        this.Price = parseFloat(price);
+    }
+    info() {
+        let status = this.Status ? "already read" : "not yet read";
+        return (`${this.Title} by ${this.Author}, ${this.Pages} pages, ${status}. It sells at ${this.price}`);
+    }
 }
 
-Book.prototype.info = function () {
-    let status = this.Status ? "already read" : "not yet read";
-    return (`${this.Title} by ${this.Author}, ${this.Pages} pages, ${status}. It sells at ${this.price}`);
-}
 
-function SearchList(list) {
-    this.list = list;
-}
-
-SearchList.prototype.setSearchList = function () {
-    // Create a dataList, link it to the input and add to form
-    const dataList = document.createElement("datalist");
-
-    dataList.setAttribute("id", "search-list");
-    input.setAttribute("list", "search-list");
-
-    this.list.forEach((item) => {
-
-        const option = document.createElement("option");
-        option.setAttribute("value", item);
-        dataList.appendChild(option);
-    })
-    form.appendChild(dataList)
-}
-
-function Table(list) {
-    this.list = list;
-    this.mainHeader = "Books";
-    this.table = undefined; // property that will be added to the DOM html
-}
-
-Table.prototype.setTable = function () {
-    const table = document.createElement("table");
-    const caption = document.createElement("caption");
-    caption.textContent = "Books I need to read for 2025"
-
-    const thead = this.setHeaders();
-    const tbody = this.setBody();
-
-    table.append(caption, thead, tbody);
-    this.table = table;
-}
-
-Table.prototype.setHeaders = function () {
-    const thead = document.createElement("thead");
-    const mainHeader = this.mainHeader;
-    //keys of a Book Object serve as subheaders, i.e. Title
-    const subHeaders = Object.keys(this.list[0])
-
-    function setMainHeader() {
-
-        // Create a single header that spans across all subheaders, i.e. Books
-        const mainHeaderRow = document.createElement("th");
-        const tr = document.createElement("tr");
-
-        Object.assign(mainHeaderRow, {
-            id: mainHeader,
-            // camelCase for multi-word attributes even if they're not camelCased in actual DOM
-            colSpan: subHeaders.length,
-            textContent: mainHeader
-        })
-
-        tr.appendChild(mainHeaderRow);
-        return tr
+class SearchList {
+    constructor(list) {
+        this.list = list;
     }
 
-    function setSubHeader() {
-        const tr = document.createElement("tr");
+    setSearchList() {
+        // Create a dataList, link it to the input and add to form
+        const dataList = document.createElement("datalist");
 
-        subHeaders.forEach((header) => {
-            const subHeaderTr = document.createElement("th");
+        dataList.setAttribute("id", "search-list");
+        input.setAttribute("list", "search-list");
 
-            // Setting attributes using Object.assign() Method vs .setAttribute()
-            Object.assign(subHeaderTr, {
-                // id= of main header and headers= of subheaders should be the same
-                id: header,
-                headers: mainHeader,
-                textContent: header
-            })
-            tr.appendChild(subHeaderTr);
+        this.list.forEach((item) => {
+
+            const option = document.createElement("option");
+            option.setAttribute("value", item);
+            dataList.appendChild(option);
         })
-        return tr;
+        form.appendChild(dataList)
     }
-
-    const mainHeaderRow = setMainHeader();
-    const subHeaderRow = setSubHeader();
-    // thead.appendChild(mainHeaderRow);
-    // thead.appendChild(subHeaderRow);
-    thead.append(mainHeaderRow, subHeaderRow)
-    return thead;
-
 }
 
-Table.prototype.setBody = function () {
-    const tbody = document.createElement("tbody");
+class Table {
+    constructor(list) {
+        this.list = list;
+        this.mainHeader = "Books";
+        this.table = undefined; // property that will be added to the DOM html
+    }
+    setTable() {
+        const table = document.createElement("table");
+        const caption = document.createElement("caption");
+        caption.textContent = "Books I need to read for 2025";
 
-    this.list.forEach((book) => {
-        const tr = document.createElement("tr");
+        const thead = this.setHeaders();
+        const tbody = this.setBody();
 
-        // Make an array of arrays with Object.entries()
-        const entries = Object.entries(book);
-        entries.forEach((keyValue) => {
-            const td = document.createElement("td");
+        table.append(caption, thead, tbody);
+        this.table = table;
+    }
+    setHeaders() {
+        const thead = document.createElement("thead");
+        const mainHeader = this.mainHeader;
+        //keys of a Book Object serve as subheaders, i.e. Title
+        const subHeaders = Object.keys(this.list[0]);
 
-            // inner array format is [key, value]
-            td.setAttribute("headers", `${this.mainHeader} ${keyValue[0]}`)
-            td.textContent = keyValue[1];
-            tr.appendChild(td);
-        })
-        tbody.appendChild(tr);
-    })
+        function setMainHeader() {
 
-    return tbody;
+            // Create a single header that spans across all subheaders, i.e. Books
+            const mainHeaderRow = document.createElement("th");
+            const tr = document.createElement("tr");
+
+            Object.assign(mainHeaderRow, {
+                id: mainHeader,
+                // camelCase for multi-word attributes even if they're not camelCased in actual DOM
+                colSpan: subHeaders.length,
+                textContent: mainHeader
+            });
+
+            tr.appendChild(mainHeaderRow);
+            return tr;
+        }
+
+        function setSubHeader() {
+            const tr = document.createElement("tr");
+
+            subHeaders.forEach((header) => {
+                const subHeaderTr = document.createElement("th");
+
+                // Setting attributes using Object.assign() Method vs .setAttribute()
+                Object.assign(subHeaderTr, {
+                    // id= of main header and headers= of subheaders should be the same
+                    id: header,
+                    headers: mainHeader,
+                    textContent: header
+                });
+                tr.appendChild(subHeaderTr);
+            });
+            return tr;
+        }
+
+        const mainHeaderRow = setMainHeader();
+        const subHeaderRow = setSubHeader();
+        // thead.appendChild(mainHeaderRow);
+        // thead.appendChild(subHeaderRow);
+        thead.append(mainHeaderRow, subHeaderRow);
+        return thead;
+
+    }
+    setBody() {
+        const tbody = document.createElement("tbody");
+
+        this.list.forEach((book) => {
+            const tr = document.createElement("tr");
+
+            // Make an array of arrays with Object.entries()
+            const entries = Object.entries(book);
+            entries.forEach((keyValue) => {
+                const td = document.createElement("td");
+
+                // inner array format is [key, value]
+                td.setAttribute("headers", `${this.mainHeader} ${keyValue[0]}`);
+                td.textContent = keyValue[1];
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        });
+
+        return tbody;
+    }
 }
+
+
+
 
 function addBookToLibrary(title, author, genre, numPages, isRead, price) {
     // take params, create a book then store it in the array
@@ -243,12 +249,12 @@ function setNewData(newbook) {
         })
         tbody.appendChild(tr);
     }
-    function addToSearchList () {
+    function addToSearchList() {
         const dataList = document.querySelector("datalist");
         const option = document.createElement("option");
         option.setAttribute("value", newbook.Title)
         dataList.appendChild(option);
-    }   
+    }
 
     addToTable();
     addToSearchList();
