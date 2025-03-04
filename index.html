@@ -23,37 +23,37 @@
 
         <button id="openDialog">Add another book?</button>
         <dialog id="addBooks">
-            <form novalidate>
+            <form>
                 <legend>Add New Book</legend>
                 <p>
-                    <label for="book-title"></label>
+                    <label for="book-title">Book Title:</label>
                     <input autofocus type="text" name="Title" id="book-title" required placeholder="Harry Potter">
                 </p>
                 <p>
-                    <label for="book-author"></label>
-                    <input type="text" name="Author" id="book-author" required placeholder="J.K. Rowling">
+                    <label for="book-author">Author(s):</label>
+                    <input type="text" name="Author" id="book-author" placeholder="J.K. Rowling">
                 </p>
                 <p>
-                    <label for="book-pages"></label>
-                    <input type="number" min="10" name="Pages" id="book-pages" required placeholder="458">
+                    <label for="book-pages">No. of Pages:</label>
+                    <input type="number" max="10000" minlength="1" maxlength="4" name="Pages" id="book-pages" placeholder="458">
                 </p>
                 <p>
-                    <label for="book-status"></label>
+                    <label for="book-status">Have you read the text material?:</label>
                     <select name="Status" id="book-status">
-                        <option value="true">Have Read Already</option>
+                        <option value="true" default>Have Read Already</option>
                         <option value="false">Haven't Read Yet</option>
                     </select>
                 </p>
                 <p>
-                    <label for="book-genre"></label>
+                    <label for="book-genre">Genre:</label>
                     <input type="text" name="Genre" id="book-genre" required placeholder="Educational">
                 </p>
                 <p>
                     <label for="book-price">Set Price</label>
-                    <input type="number" name="Price" id="book-price" step=".1" min="1" required placeholder="4.99">
+                    <input type="number" name="Price" id="book-price" step=".01" min="1" required placeholder="4.99">
                 </p>
+                <button type="submit" id="submit">Submit</buton>
                 <button  id="cancel" formmethod="dialog">Cancel</button>
-                <buton type="submit" id="submit">Submit</buton>
             </form>
         </dialog>
     </div>

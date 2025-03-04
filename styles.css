@@ -1,12 +1,13 @@
 .body-container,
-form {
+form,
+dialog > form > p {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
 }
 
-form {
+.body-container > form {
   padding: 1rem;
 }
 
@@ -19,6 +20,7 @@ input {
   transition-duration: 0.4s;
   padding: 0.2rem;
   width: clamp(15px, 15vw, 300px);
+  font-size: 1.3rem;
 }
 
 input:hover {
@@ -57,20 +59,63 @@ dialog {
   -webkit-transform: translateX(180%) translateY(60%);
   -moz-transform: translateX(180%) translateY(60%);
   -ms-transform: translateX(180%) translateY(60%);
-  transform: translateX(180%) translateY(60%);
+  transform: translateX(8%) translateY(20%);
+  width: 30%;
+  height: fit-content;
+  border-radius: 15px;
+  border: 8px dotted rgba(0, 255, 255, 0.329);
+}
+
+dialog * {
+  /* border: .5px solid black;    */
 }
 
 dialog::backdrop {
-  background-color: rgba(156, 243, 243, 0.363);
+  background-color: rgba(156, 243, 243, 0.637);
   border: 0.5px solid rgba(127, 255, 212, 0.568);
 }
 
-dialog > form > input {
-  padding: 0.5rem;
-  padding-left: 1rem;
+dialog > form {
+  height: 100%;
+  align-items: revert;
+  padding: 2rem;
+  gap: 0.5rem;
 }
 
-dialog > form > input:focus {
+dialog > form > p {
+  align-items: revert;
+}
+
+dialog > form > p > input,
+#book-status {
+  padding: 0.3rem 0.5rem 0.2rem 0.5rem;
+  padding-left: 1rem;
+  width: 100%;
+}
+
+dialog > form > p > label {
+  font-size: 1rem;
+}
+dialog > form > p > input:valid {
+  border: 1px solid green;
+}
+
+dialog > form > p > input:focus{
+  background-color: rgba(255, 255, 0, 0.267);
+  padding: 0.5rem;
+}
+
+dialog > form > p > input:invalid {
   border: 1px solid red;
-  box-shadow: red 0.1rem 0.1rem 0.1rem inset;
+}
+dialog > form > p >input:required {
+  border-width: 2px;
+}
+
+#book-status {
+  width: fit-content;
+}
+
+dialog > form > button {
+  margin: 0;
 }

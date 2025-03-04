@@ -6,10 +6,10 @@ class Book {
   constructor(title, author, genre, numPages, isRead = false, price) {
     this.Title = title;
     this.Author = author;
-    this.Pages = parseInt(numPages);
-    this.Status = isRead ? "Read" : "Not Yet Read";
     this.Genre = genre;
-    this.Price = parseFloat(price);
+    this.Pages = Number(numPages);
+    this.Price = Number(price);
+    this.Status = isRead ? "Read" : "Not Yet Read";
   }
   info() {
     let status = this.Status ? "already read" : "not yet read";
@@ -42,8 +42,11 @@ class Table {
   constructor(list) {
     this.list = list;
     this.mainHeader = "Books";
-    this.table = undefined; // property that will be added to the DOM html
+
+    // property that will be added to the DOM html
+    this.table = undefined;
   }
+
   setTable() {
     const table = document.createElement("table");
     const caption = document.createElement("caption");
@@ -55,9 +58,11 @@ class Table {
     table.append(caption, thead, tbody);
     this.table = table;
   }
+
   setHeaders() {
     const thead = document.createElement("thead");
     const mainHeader = this.mainHeader;
+
     //keys of a Book Object serve as subheaders, i.e. Title
     const subHeaders = Object.keys(this.list[0]);
 
@@ -68,6 +73,7 @@ class Table {
 
       Object.assign(mainHeaderRow, {
         id: mainHeader,
+
         // camelCase for multi-word attributes even if they're not camelCased in actual DOM
         colSpan: subHeaders.length,
         textContent: mainHeader,
@@ -97,11 +103,10 @@ class Table {
 
     const mainHeaderRow = setMainHeader();
     const subHeaderRow = setSubHeader();
-    // thead.appendChild(mainHeaderRow);
-    // thead.appendChild(subHeaderRow);
     thead.append(mainHeaderRow, subHeaderRow);
     return thead;
   }
+
   setBody() {
     const tbody = document.createElement("tbody");
 
@@ -157,10 +162,9 @@ function handleSubmit() {
       if (input.value === book.Title.trim()) {
         let index = myLibrary.indexOf(book) + 1;
         let row = document.querySelector(`tbody > tr:nth-child(${index})`);
-        Object.assign(row.style, {
-          backgroundColor: "teal",
-          color: "white",
-        });
+        console.log(row);
+        row.style.backgroundColor = "teal";
+        row.style.color = "white";
         break outer;
       }
     }
@@ -173,10 +177,11 @@ function handleTransition() {
   tr.forEach((target) => {
     target.addEventListener("transitionend", () => {
       let currentBgColor = target.style["backgroundColor"];
-
+      console.log(target);
       // transition of bg back to white (from teal) is delayed for 8s
       if (currentBgColor === "white") {
         target.style["transitionDelay"] = "0s";
+        target.style["backgroundColor"] = "teal";
       } else {
         target.style["transitionDelay"] = "6s";
         Object.assign(target.style, {
@@ -201,12 +206,21 @@ function handleDialog() {
 
   submitBtn.addEventListener("click", (event) => {
     event.preventDefault();
+
     inputs.forEach((input) => {
       if (input.name === "Status") {
         // addBookToLibrary() accepts boolean values for this.Status
         returnValue[input.name] = input.value === "true";
       } else returnValue[input.name] = input.value;
     });
+
+    validateInput();
+    for (let property in returnValue) {
+      if (!returnValue[property]) {
+        alert("Missing required inputs!");
+        return;
+      }
+    }
     dialog.close();
   });
 
@@ -251,6 +265,21 @@ function setNewData(newbook) {
 
   addToTable();
   addToSearchList();
+}
+
+function validateInput() {
+  const [title, author, numPages, genre, price] = document.querySelectorAll(
+    "dialog input[id^=book]",
+  );
+  const status = document.querySelector("dialog select");
+  console.log(
+    title.validity,
+    author.validity,
+    numPages.validity,
+    genre.validity,
+    price.validity,
+    status.validity,
+  );
 }
 
 addBookToLibrary(
