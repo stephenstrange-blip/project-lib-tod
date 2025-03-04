@@ -54,6 +54,12 @@ td {
     border-left: 1px solid rgb(106, 231, 231);
 }
 
+dialog {
+    -webkit-transform: translateX(180%) translateY(60%);
+    -moz-transform: translateX(180%) translateY(60%);
+    -ms-transform: translateX(180%) translateY(60%);
+    transform: translateX(180%) translateY(60%);
+}
 
 dialog::backdrop {
     background-color: rgba(156, 243, 243, 0.363);
